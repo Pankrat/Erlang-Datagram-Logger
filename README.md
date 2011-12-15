@@ -7,12 +7,16 @@ Erlang and get familiar with OTP. Eventually, it might grow into something
 useful but at the moment you're better of using syslog or other logging
 services.
 
-Pros:
+Pros
+----
+
     * Very simple implementation
     * Connection-less: single logging server can handle multiple clients
       logging to the same file
 
-Cons:
+Cons
+----
+
     * Packets might be silently dropped if the logging frequency is very high
       or the log service consumes data slower than clients produce it
     * Large messages will be truncated if the message size exceeds the size of
