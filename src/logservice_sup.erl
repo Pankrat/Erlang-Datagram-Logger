@@ -18,6 +18,8 @@ init([]) ->
               worker,
               [logservice_udp]},
    Children = [Server],
-   RestartStrategy = {one_for_one, 0, 1},
+   % Restart with a maximum frequency of once per minute. Should the logger
+   % crash more often, the application terminates.
+   RestartStrategy = {one_for_one, 1, 60},
    {ok, {RestartStrategy, Children}}.
 
