@@ -1,4 +1,4 @@
--module(logservice_sup).
+-module(log_sup).
 -behaviour(supervisor).
 
 -export([start_link/0]).
@@ -12,19 +12,19 @@ start_link() ->
 
 init([]) ->
     % Supervises the UDP listener process
-    Server = {logservice_udp, 
-              {logservice_udp, start_link, [1056]},
+    Server = {log_udp_server, 
+              {log_udp_server, start_link, [1056]},
               permanent,
               2000,
               worker,
-              [logservice_udp]},
+              [log_udp_server]},
     % Supervisor of the TCP workers
-    Supervisor = {tcp_sup, 
-                  {tcp_sup, start_link, [1057]},
+    Supervisor = {log_tcp_sup, 
+                  {log_tcp_sup, start_link, [1057]},
                   permanent,
                   2000,
                   supervisor,
-                  [tcp_sup]},
+                  [log_tcp_sup]},
    Children = [Server, Supervisor],
    % Restart with a maximum frequency of once per minute. Should the logger
    % crash more often, the application terminates.

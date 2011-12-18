@@ -1,4 +1,4 @@
--module(logservice_udp).
+-module(log_udp_server).
 -behaviour(gen_server).
 
 -export([start_link/1, stop/0, log/1]).

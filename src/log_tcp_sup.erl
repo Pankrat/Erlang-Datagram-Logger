@@ -1,4 +1,7 @@
--module(tcp_sup).
+% TCP server supervisor, derived from:
+% http://www.learnyousomeerlang.com/buckets-of-sockets
+
+-module(log_tcp_sup).
 -behaviour(supervisor).
 
 -export([start_link/1, start_child/0]).
@@ -15,12 +18,12 @@ start_child() ->
 
 init([Port]) ->
     {ok, ListenSocket} = gen_tcp:listen(Port, [{active, true}]),
-    Server = {logservice_tcp, 
-              {logservice_tcp, start_link, [ListenSocket]},
+    Server = {log_tcp_server, 
+              {log_tcp_server, start_link, [ListenSocket]},
               temporary,
               brutal_kill,
               worker,
-              [logservice_tcp]},
+              [log_tcp_server]},
    Children = [Server],
    RestartStrategy = {simple_one_for_one, 1, 60},
    spawn_link(fun start_listeners/0),

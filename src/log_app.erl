@@ -1,10 +1,10 @@
--module(logservice_app).
+-module(log_app).
 -behaviour(application).
 
 -export([start/2, stop/1]).
 
 start(_Type, _StartArgs) ->
-    case logservice_sup:start_link() of
+    case log_sup:start_link() of
         {ok, Pid} ->
             {ok, Pid};
         Other ->
