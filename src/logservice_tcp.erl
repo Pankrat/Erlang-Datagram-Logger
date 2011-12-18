@@ -13,7 +13,7 @@
 start_link(Socket) -> 
     gen_server:start_link(?MODULE, [Socket], []).
 
-init([Socket]) -> 
+init([Socket]) ->
     {ok, #state{socket = Socket}, 0}.
 
 % Simple echo for now
@@ -25,15 +25,16 @@ handle_cast(stop, State) ->
     {stop, normal, State}.
 
 % Dispatch raw data packets arriving at the TCP socket
-handle_info({tcp, Socket, RawData}, State) ->
+handle_info({tcp, _Socket, RawData}, State) ->
     Message = RawData ++ "\n",
-    % TODO: call or cast log message to logging process; for now just echo.
-    gen_tcp:send(Socket, Message),
+    logservice_udp:log(Message),
     {noreply, State};
 handle_info({tcp_closed, _Socket}, State) ->
+    io:format("Client disconnected from TCP socket. Stop listener.~n"),
     {stop, normal, State};
 handle_info(timeout, #state{socket = Socket} = State) ->
     {ok, _Socket} = gen_tcp:accept(Socket),
+    io:format("Client connected to TCP socket. Starting new listener.~n"),
     tcp_sup:start_child(),
     {noreply, State}.
 

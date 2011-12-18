@@ -14,16 +14,22 @@ start_child() ->
     supervisor:start_child(?SERVER, []).
 
 init([Port]) ->
-    {ok, Socket} = gen_tcp:listen(Port, [{active, true}]),
+    {ok, ListenSocket} = gen_tcp:listen(Port, [{active, true}]),
     Server = {logservice_tcp, 
-              {logservice_tcp, start_link, [Socket]},
+              {logservice_tcp, start_link, [ListenSocket]},
               temporary,
               brutal_kill,
               worker,
               [logservice_tcp]},
    Children = [Server],
-   % Restart with a maximum frequency of once per minute. Should the logger
-   % crash more often, the application terminates.
-   RestartStrategy = {one_for_one, 1, 60},
+   RestartStrategy = {simple_one_for_one, 1, 60},
+   spawn_link(fun start_listeners/0),
    {ok, {RestartStrategy, Children}}.
 
+
+% Create two workers (waiting for clients). The clients themselves spawn new
+% listeners whenever a client connects. Thus, there should always be two idle
+% workers.
+start_listeners() ->
+   supervisor:start_child(?SERVER, []),
+   supervisor:start_child(?SERVER, []).
