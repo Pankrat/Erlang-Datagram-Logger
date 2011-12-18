@@ -1,4 +1,17 @@
-ebin/%.beam: src/%.erl
-	erlc -o ebin $<
+ERLC ?= erlc
+ERLFLAGS ?=
 
-all: ebin/logservice_udp.beam ebin/logservice_sup.beam ebin/logservice_app.beam
+modules := logservice_udp logservice_tcp logservice_app logservice_sup tcp_sup
+modules := $(addsuffix .beam,$(modules))
+modules := $(addprefix ebin/,$(modules))
+
+all: $(modules)
+
+debug: ERLFLAGS += +debug_module
+debug: all
+
+ebin/%.beam: src/%.erl
+	$(ERLC) $(ERLFLAGS) -o ebin $<
+
+clean:
+	rm -f $(modules)
