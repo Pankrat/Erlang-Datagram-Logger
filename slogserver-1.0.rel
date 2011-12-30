@@ -1,0 +1,6 @@
+{release,
+ {"slogserver", "1.0.0"},
+ {erts, "5.8.3"},
+ [{kernel, "2.14.3"},
+  {stdlib, "1.17.3"},
+  {slogserver, "0.1.0", permanent}]}.
