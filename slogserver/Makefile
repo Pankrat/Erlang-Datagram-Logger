@@ -1,7 +1,7 @@
 ERLC ?= erlc
 ERLFLAGS ?=
 
-modules := log_app log_sup log_udp_server log_tcp_sup log_tcp_server
+modules := log_app log_sup log_udp_server log_tcp_sup log_tcp_server amqp_consumer
 modules := $(addsuffix .beam,$(modules))
 modules := $(addprefix ebin/,$(modules))
 

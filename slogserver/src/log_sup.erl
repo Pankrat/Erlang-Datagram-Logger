@@ -25,9 +25,16 @@ init([]) ->
                   2000,
                   supervisor,
                   [log_tcp_sup]},
-   Children = [Server, Supervisor],
-   % Restart with a maximum frequency of once per minute. Should the logger
-   % crash more often, the application terminates.
-   RestartStrategy = {one_for_one, 1, 60},
-   {ok, {RestartStrategy, Children}}.
+    % RabbitMQ consumer process
+    Consumer = {amqp_consumer, 
+                {amqp_consumer, start_link, [<<"rmqtest01">>]},
+                permanent,
+                2000,
+                worker,
+                [amqp_consumer]},
+    Children = [Server, Consumer, Supervisor],
+    % Restart with a maximum frequency of once per minute. Should the logger
+    % crash more often, the application terminates.
+    RestartStrategy = {one_for_one, 1, 60},
+    {ok, {RestartStrategy, Children}}.
 
